@@ -18,6 +18,7 @@ from utils import delete_images
 from skimage import io
 from skimage.metrics import structural_similarity as compare_ssim
 
+
 class MatchImages:
     def __init__(self, folder_path, target_path, threshold):
         self.folder_path = folder_path
@@ -32,7 +33,7 @@ class MatchImages:
             img2 = io.imread(self.target_path)
 
             # Verificar se as imagens foram carregadas corretamente
-            #if img1 is None or img2 is None:
+            # if img1 is None or img2 is None:
             #    raise ValueError("Não foi possível carregar as imagens.")
 
             # Converter as imagens para tons de cinza (para comparar melhor)
@@ -40,7 +41,9 @@ class MatchImages:
             gray_img2 = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
 
             if gray_img1.shape != gray_img2.shape:
-                gray_img1 = cv2.resize(gray_img1, (gray_img2.shape[1], gray_img2.shape[0]))
+                gray_img1 = cv2.resize(
+                    gray_img1, (gray_img2.shape[1], gray_img2.shape[0])
+                )
 
             # Calcular o coeficiente de similaridade estrutural (SSIM) entre as imagens
             ssim = compare_ssim(gray_img1, gray_img2)
@@ -51,8 +54,13 @@ class MatchImages:
             else:
                 pass
         return False
-    
+
+
 # Example usage of the ImageScraper class
 if __name__ == "__main__":
-    scraper = MatchImages(folder_path="folder_path", target_path="image_target_path", threshold="threshold")
+    scraper = MatchImages(
+        folder_path="folder_path",
+        target_path="image_target_path",
+        threshold="threshold",
+    )
     scraper.match_threshold()
