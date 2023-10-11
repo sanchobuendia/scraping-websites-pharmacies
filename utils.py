@@ -1,6 +1,7 @@
 import os
 import shutil
 
+
 def delete_images(folder):
     """
     Delete a folder and its content.
@@ -18,4 +19,4 @@ def delete_images(folder):
             elif os.path.isdir(file_path):
                 shutil.rmtree(file_path)
         except Exception as e:
-            print('Failed to delete %s. Reason: %s' % (file_path, e))
+            print("Failed to delete %s. Reason: %s" % (file_path, e))

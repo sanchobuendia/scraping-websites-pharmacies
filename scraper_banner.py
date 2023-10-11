@@ -18,6 +18,7 @@ from utils import delete_images
 from skimage import io
 from skimage.metrics import structural_similarity as compare_ssim
 
+
 class ImageScraper:
     def __init__(self, loja, dict_url):
         self.loja = loja
@@ -41,9 +42,11 @@ class ImageScraper:
 
         # set Firefox driver options
         firefox_options = webdriver.FirefoxOptions()
-        firefox_options.add_argument('--headless')
+        firefox_options.add_argument("--headless")
         firefox_service = FirefoxService(executable_path=GeckoDriverManager().install())
-        self.driver = webdriver.Firefox(service=firefox_service, options=firefox_options)
+        self.driver = webdriver.Firefox(
+            service=firefox_service, options=firefox_options
+        )
 
     def get_banners(self, page):
         self.page = page
@@ -67,15 +70,23 @@ class ImageScraper:
         if "medicamentos" in self.url or "drogariaglobo" in self.url:
             if self.carousel_button_xpath != " ":
                 for i in range(12):
-                    self.driver.find_element(By.XPATH, self.carousel_button_xpath).click()
+                    self.driver.find_element(
+                        By.XPATH, self.carousel_button_xpath
+                    ).click()
                     time.sleep(2)
 
         container = self.driver.find_element(By.XPATH, self.banner_xpath)
-        images = container.find_elements("css selector",'img')
+        images = container.find_elements("css selector", "img")
 
         for i, image in enumerate(images):
             image_url = image.get_attribute("src")
-            if image_url is None or image_url == '' or 'data:image/svg+xml' in image_url or ".svg" in image_url or 'data:image/gif' in image_url:
+            if (
+                image_url is None
+                or image_url == ""
+                or "data:image/svg+xml" in image_url
+                or ".svg" in image_url
+                or "data:image/gif" in image_url
+            ):
                 pass
             else:
                 time.sleep(1)
@@ -85,9 +96,7 @@ class ImageScraper:
 
         self.driver.quit()
 
-
     def get_images_iframe(self):
-
         self.driver.get(self.url)
         time.sleep(6)
         if self.cookie_button_css != False:
@@ -95,7 +104,7 @@ class ImageScraper:
             time.sleep(2)
 
         # navigate to the website
-        for iframe_number in range(5,8):
+        for iframe_number in range(5, 8):
             self.driver.get(self.url)
             time.sleep(6)
 
@@ -105,11 +114,15 @@ class ImageScraper:
 
                 else:
                     if self.iframe_css != False:
-                        self.driver.switch_to.frame(self.driver.find_element(By.CSS_SELECTOR, self.iframe_css+str(iframe_number)))
+                        self.driver.switch_to.frame(
+                            self.driver.find_element(
+                                By.CSS_SELECTOR, self.iframe_css + str(iframe_number)
+                            )
+                        )
                         time.sleep(2)
 
                     container = self.driver.find_element(By.XPATH, self.category_xpath)
-                    images = container.find_elements("css selector",'img')
+                    images = container.find_elements("css selector", "img")
 
                     if os.path.exists("images"):
                         delete_images("images")
@@ -118,7 +131,14 @@ class ImageScraper:
 
                     for i, image in enumerate(images):
                         image_url = image.get_attribute("src")
-                        if image_url == None or image_url == '' or 'data:image/svg+xml' in image_url or ".svg" in image_url or 'data:image/gif' in image_url or '/_next/image?url=' in image_url:
+                        if (
+                            image_url == None
+                            or image_url == ""
+                            or "data:image/svg+xml" in image_url
+                            or ".svg" in image_url
+                            or "data:image/gif" in image_url
+                            or "/_next/image?url=" in image_url
+                        ):
                             pass
                         else:
                             time.sleep(1)
@@ -130,7 +150,6 @@ class ImageScraper:
                 print("An exception occurred:", error)
         self.driver.quit()
 
-
     def url_ache_mosaic(self):
         """
         To get mosaic images from an url.
@@ -141,13 +160,13 @@ class ImageScraper:
                 The url that will be accessed.
             category_xpath : str
                 DOM Xpath from the banner.
-        """    
+        """
         self.driver.get(self.url)
 
         time.sleep(30)
 
         container = self.driver.find_element(By.XPATH, self.category_xpath)
-        images = container.find_elements("css selector",'img')
+        images = container.find_elements("css selector", "img")
 
         if os.path.exists("images"):
             delete_images("images")
@@ -156,7 +175,13 @@ class ImageScraper:
 
         for i, image in enumerate(images):
             image_url = image.get_attribute("data-src")
-            if image_url == None or image_url == '' or 'data:image/svg+xml' in image_url or ".svg" in image_url or 'data:image/gif' in image_url:
+            if (
+                image_url == None
+                or image_url == ""
+                or "data:image/svg+xml" in image_url
+                or ".svg" in image_url
+                or "data:image/gif" in image_url
+            ):
                 pass
             else:
                 image_url = self.url + image.get_attribute("data-src")
@@ -166,7 +191,8 @@ class ImageScraper:
                     f.write(response.content)
 
         self.driver.quit()
-    
+
+
 # Example usage of the ImageScraper class
 if __name__ == "__main__":
     scraper = ImageScraper(loja="your_url_here")
