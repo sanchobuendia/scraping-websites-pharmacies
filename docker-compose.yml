@@ -1,0 +1,8 @@
+version: "0"
+services:
+  core_api:
+    build: .
+    container_name: "pharmacy-api"
+    ports:
+      - "8080:8000"
+    privileged: true
